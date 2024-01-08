@@ -4,7 +4,8 @@ from django.http import HttpResponse
 
 
 def index(request):
-    return HttpResponse("hello From Blog-Index")
+    return render(request, 'blog/index.html')
+    # return HttpResponse("hello From Blog-Index")
 
 
 def check(request):
