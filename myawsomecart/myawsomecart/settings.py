@@ -43,7 +43,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'blog',
-    'shop'
+    # 'shop',
+    'shop.apps.ShopConfig'  # We can use this as shop ref, location : shop/app.py
 ]
 
 MIDDLEWARE = [
