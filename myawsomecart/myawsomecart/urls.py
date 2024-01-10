@@ -16,10 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from . import views  # import the views file
+from django.conf import settings  # Imported By me for Media access
+from django.conf.urls.static import static  # Imported By me for Media access
 
 urlpatterns = [
     path('admin/', admin.site.urls),  # For Super User login
     path("", views.index, name="projectindex"),
     path("shop/", include('shop.urls')),
     path("blog/", include('blog.urls')),
-]
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
