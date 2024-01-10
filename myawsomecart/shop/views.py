@@ -1,10 +1,14 @@
 from django.shortcuts import render
 from django.http import HttpResponse
+# Import Product from Model
+from .models import Product
 
 
 def index(request):
+    products = Product.objects.all()
     # return HttpResponse("hello From Blog-Index")
-    return render(request, 'shop/index.html')
+    print(products)
+    return render(request, 'shop/index.html',{'product':products})
 
 
 def check(request):
