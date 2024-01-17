@@ -2,13 +2,15 @@ from django.shortcuts import render
 from django.http import HttpResponse
 # Import Product from Model
 from .models import Product
+from math import ceil
 
 
 def index(request):
     products = Product.objects.all()
-    # return HttpResponse("hello From Blog-Index")
-    print(products)
-    return render(request, 'shop/index.html',{'product':products})
+    n = len(products)
+    nSlides = n // 4 + ceil((n / 4) - (n // 4))
+    params = {'no_of_slides': nSlides, 'range': range(1, nSlides), 'product': products}
+    return render(request, 'shop/index.html', params)
 
 
 def check(request):
