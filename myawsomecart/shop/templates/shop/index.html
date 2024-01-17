@@ -8,41 +8,55 @@
 display: inline-block;
 margin-left:-4px;
 }
+
 .carousel-indicators .active {
 background-color: blue;
 }
+
 .col-md-3 img{
-width:255px;
-height:355px;
+
+width: 227px;
+max-height: 242px;
 }
+
 body .carousel-indicator li{
 background-color: blue;
 }
+
 body .carousel-indicators{
 bottom: 0;
 }
+
 body .carousel-control-prev-icon,
 body .carousel-control-next-icon{
 background-color: blue;
+}
+
+.carousel-control-prev,
+.carousel-control-next{
+top: auto;
+bottom: auto;
 }
 body .no-padding{
 padding-left: 0,
 padding-right: 0;
 }
-
 {% endblock %}
 
 {% block body %}
 <!--Slide Show Start-->
-<!--{% load static %} For Loading the static file, to open the Image-->
+
+{% for product, range, nSlides in allProds %} <!--Parent For-->
+<h3>{{product.0.category}}</h3>
+
 <div class="container">
-    <div class="carousel slide my-3" data-ride="carousel" id="demo">
+    <div class="carousel slide my-3" data-ride="carousel" id="demo{{forloop.counter}}">
         <ul class="carousel-indicators">
-            <li class="active" data-slide-to="0" data-target="#demo"></li>
+            <li class="active" data-slide-to="0" data-target="#demo{{forloop.counter}}"></li>
 
             <!--Here range is pass form backend-->
             {% for i in range %}
-            <li data-slide-to="{{i}}" data-target="#demo"></li>
+            <li data-slide-to="{{i}}" data-target="#demo{{forloop.parentloop.counter}}"></li>
             {% endfor %}
         </ul>
 
@@ -75,7 +89,9 @@ padding-right: 0;
                         </div>
                     </div>
                 </div>
+
                 {% if forloop.counter|divisibleby:3 and forloop.counter > 0 and not forloop.last %}
+
             </div>
             <div class="carousel-item">
                 {% endif %}
@@ -87,14 +103,19 @@ padding-right: 0;
     <!--Slide Show End-->
 
     <!-- left and right controls for the slide -->
-    <a class="carousel-control-prev" data-slide="prev" href="#demo">
+    <a class="carousel-control-prev" data-slide="prev" href="#demo{{forloop.counter}}">
         <span class="carousel-control-prev-icon"></span>
     </a>
-    <a class="carousel-control-next" data-slide="next" href="#demo">
+    <a class="carousel-control-next" data-slide="next" href="#demo{{forloop.counter}}">
         <span class="carousel-control-next-icon"></span>
     </a>
     <!-- END left and right controls for the slide -->
-    {% endblock %}
 
+
+    {% endfor %} <!--Parent For-->
 
 </div>
+{% endblock %}
+
+
+
