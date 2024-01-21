@@ -8,41 +8,56 @@
 display: inline-block;
 margin-left:-4px;
 }
+
 .carousel-indicators .active {
 background-color: blue;
 }
+
 .col-md-3 img{
-width:255px;
-height:355px;
+
+max-width: 227px;
+height: 242px;
 }
+
 body .carousel-indicator li{
 background-color: blue;
 }
+
 body .carousel-indicators{
 bottom: 0;
 }
+
 body .carousel-control-prev-icon,
 body .carousel-control-next-icon{
 background-color: blue;
+}
+
+.carousel-control-prev,
+.carousel-control-next{
+top: auto;
+bottom: auto;
 }
 body .no-padding{
 padding-left: 0,
 padding-right: 0;
 }
-
 {% endblock %}
 
 {% block body %}
 <!--Slide Show Start-->
-<!--{% load static %} For Loading the static file, to open the Image-->
+
+{% for product, range, nSlides in allProds %} <!--Parent For-->
+<!-- Newly Added -->
+<div class="row">
 <div class="container">
-    <div class="carousel slide my-3" data-ride="carousel" id="demo">
+    <h5 class="my-5"> Flash On : Recommended Items - {{product.0.category}}</h5>
+    <div class="col carousel slide my-3" data-ride="carousel" id="demo{{forloop.counter}}">
         <ul class="carousel-indicators">
-            <li class="active" data-slide-to="0" data-target="#demo"></li>
+            <li class="active" data-slide-to="0" data-target="#demo{{forloop.counter}}"></li>
 
             <!--Here range is pass form backend-->
             {% for i in range %}
-            <li data-slide-to="{{i}}" data-target="#demo"></li>
+            <li data-slide-to="{{i}}" data-target="#demo{{forloop.parentloop.counter}}"></li>
             {% endfor %}
         </ul>
 
@@ -51,31 +66,23 @@ padding-right: 0;
 
             <!-- Adding 0 number index product here manually, because it is active class-->
             <div class="carousel-item active">
-                <div class="col-xs-3 col-sm-3 col-md-3">
-                    <div class="card" style="width: 18rem;">
-                        <img alt="..." class="card-img-top" src='/media/{{product.0.image}}'>
-                        <div class="card-body">
-                            <h5 class="card-title">{{product.0.product_name}}</h5>
-                            <p class="card-text">{{product.0.desc}}.</p>
-                            <a class="btn btn-primary" href="#">Add To Cart</a>
-                        </div>
-                    </div>
-                </div>
 
                 <!--Add Item from 1 number Index With using for loop, 0 number index product added manually to active class-->
 
-                {% for i in product|slice:"1:" %}
+                {% for i in product %}
                 <div class="col-xs-3 col-sm-3 col-md-3">
                     <div class="card" style="width: 18rem;">
                         <img alt="..." class="card-img-top" src='/media/{{i.image}}'>
                         <div class="card-body">
                             <h5 class="card-title">{{i.product_name}}</h5>
                             <p class="card-text">{{i.desc}}.</p>
-                            <a class="btn btn-primary" href="#">Add To Cart</a>
+                            <button class="btn btn-primary cart" id="pr{{i.id}}">Add To Cart</button>
                         </div>
                     </div>
                 </div>
-                {% if forloop.counter|divisibleby:3 and forloop.counter > 0 and not forloop.last %}
+
+                {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
+
             </div>
             <div class="carousel-item">
                 {% endif %}
@@ -87,14 +94,59 @@ padding-right: 0;
     <!--Slide Show End-->
 
     <!-- left and right controls for the slide -->
-    <a class="carousel-control-prev" data-slide="prev" href="#demo">
+    <a class="carousel-control-prev" data-slide="prev" href="#demo{{forloop.counter}}">
         <span class="carousel-control-prev-icon"></span>
     </a>
-    <a class="carousel-control-next" data-slide="next" href="#demo">
+    <a class="carousel-control-next" data-slide="next" href="#demo{{forloop.counter}}">
         <span class="carousel-control-next-icon"></span>
     </a>
     <!-- END left and right controls for the slide -->
-    {% endblock %}
-
-
 </div>
+    {% endfor %} <!--Parent For-->
+
+    <br> <br><br>  <!--Just for extra space in the web page-->
+</div>
+{% endblock %}<!--Body BLock-->
+
+<!--JS Block-->
+{% block js %}
+<script>
+    console.log("Working Check")
+    // Create cart if not exist, if exists then fetch it
+    if(localStorage.getItem('cart') == null){
+        var cart = {};
+    }else{
+        cart = JSON.parse(localStorage.getItem('cart'));
+        //! Here 'cart' is navbar cart button ID, cart is variable we created in localStorage
+        // It will show how many differnt product in the cart
+        document.getElementById('cart').innerHTML = Object.keys(cart).length;
+    }
+
+    //!JQuery
+    $('.cart').click(function(){
+        // After click this funtion will the increse the number of same product, if the product is exists in the cart
+        // simply in count the product quantity 
+        console.log('Clicked - Checked')
+        var idstr = this.id.toString();
+        if(cart[idstr] != undefined){
+            cart[idstr] = cart[idstr] + 1;
+        }else{
+            cart[idstr] = 1;
+        }
+
+        // Update cart
+        console.log(cart);
+        localStorage.setItem('cart', JSON.stringify(cart));
+        //! Here 'cart' is navbar cart button ID, cart is variable we created in localStorage
+        // It will show how many differnt product in the cart
+        document.getElementById('cart').innerHTML = Object.keys(cart).length;
+    });
+
+</script>
+
+
+{% endblock %}
+<!--JS Block END-->
+
+
+

@@ -6,12 +6,17 @@ from math import ceil
 
 
 def index(request):
-    products = Product.objects.all()
-    n = len(products)
-    nSlides = n // 4 + ceil((n / 4) - (n // 4))
-    # params = {'no_of_slides': nSlides, 'range': range(1, nSlides), 'product': products}
-    allProds = [[products, range(1, nSlides), nSlides],
-                [products, range(1, nSlides), nSlides]]
+    # products = Product.objects.all() # Fetch all the Product
+    allProds = []
+    category_and_id = Product.objects.values('category', 'id')  # It will fetch all the category and id column's data
+    all_category = {item['category'] for item in category_and_id}  # Set comprehensions for store the unique category name
+    for category in all_category:
+        prod = Product.objects.filter(category=category)  # Fetch item details based on category
+        n = len(prod)
+        nSlides = n // 4 + ceil((n / 4) - (n // 4))
+        # Store the data based on category in the main list
+        allProds.append([prod, range(1, nSlides), nSlides])
+
     params = {'allProds': allProds}
     return render(request, 'shop/index.html', params)
 

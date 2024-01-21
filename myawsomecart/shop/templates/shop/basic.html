@@ -11,7 +11,8 @@
 
     <title>{% block title %} {% endblock %}</title>
     <style>
-          {% block css %} {% endblock %}
+          {% block css %}
+           {% endblock %}
     </style>
 </head>
 <body>
@@ -45,8 +46,9 @@
                     <a class="dropdown-item" href="#">Something else here</a>
                 </div>
             </li>
-            <li class="nav-item">
-                <a aria-disabled="true" class="nav-link disabled" href="#" tabindex="-1">Disabled</a>
+            <!-- Adding cart in the nav bar -->
+            <li class="nav-item ">
+                <a class="nav-link" href="#">Cart(<span id="cart">0</span>) </a>
             </li>
         </ul>
         <form class="form-inline my-2 my-lg-0">
@@ -69,5 +71,7 @@
 <script crossorigin="anonymous"
         integrity="sha384-B0UglyR+jN6CkvvICOB2joaf5I4l3gm9GU6Hc1og6Ls7i6U/mkkaduKaBhlAXv9k"
         src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js"></script>
+
+{% block js %} {% endblock %}
 </body>
 </html>

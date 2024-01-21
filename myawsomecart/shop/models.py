@@ -16,4 +16,6 @@ class Product(models.Model):
 
     # To show the product in the list as the name of product name in Admin Panel
     def __str__(self):
-        return self.product_name
+        show_id_and_name = f"{self.id} - {self.product_name}"
+        return show_id_and_name
+        # return self.product_name
