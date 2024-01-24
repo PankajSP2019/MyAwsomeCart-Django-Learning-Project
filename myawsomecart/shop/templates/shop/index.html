@@ -63,12 +63,17 @@ padding-right: 0;
                 <div class="carousel-item active">
                     {% for i in product %}
                     <div class="col-xs-3 col-sm-3 col-md-3">
-                        <div class="card" style="width: 18rem;">
+                        <div class="card align-items-center" style="width: 18rem;">
                             <img alt="..." class="card-img-top" src='/media/{{i.image}}'>
                             <div class="card-body">
                                 <h5 class="card-title">{{i.product_name}}</h5>
-                                <p class="card-text">{{i.desc}}</p>
+                                <p class="card-text">{{i.desc|slice:"0:53"}}....</p>
+                                <!-- Changes here to add increment/decrement button -->
+                                <span id="divpr{{i.id}}" class="divpr">
                                 <button class="btn btn-primary cart" id="pr{{i.id}}">Add To Cart</button>
+                                </span>
+                                <!-- Pass the ID to Link -->
+                                <a href="/shop/products/{{i.id}}"><button class="btn btn-primary cart" id="pv{{i.id}}">Quick View</button></a>
                             </div>
                         </div>
                     </div>
@@ -96,7 +101,7 @@ padding-right: 0;
 <!--JS Block-->
 {% block js %}
 <script>
-    console.log("Working Check")
+    // Find out cart item form local Storage
     // Create cart if not exist, if exists then fetch it
     if(localStorage.getItem('cart') == null){
         var cart = {};
@@ -105,6 +110,7 @@ padding-right: 0;
         //! Here 'cart' is navbar cart button ID, cart is variable we created in localStorage
         // It will show how many differnt product in the cart
         document.getElementById('cart').innerHTML = Object.keys(cart).length;
+        updatecart(cart);
     }
 
     //!JQuery
@@ -119,13 +125,45 @@ padding-right: 0;
             cart[idstr] = 1;
         }
 
-        // Update cart
-        console.log(cart);
+        updatecart(cart);
+    });
+    // For showing the popover-text in the cart button
+    $("#popcart").popover();
+    document.getElementById("popcart").setAttribute('data-content', "<h6>This is your shopping Cart, Happy Shopping</h6>")
+
+    // New function for updating the cart
+    function updatecart(cart){
+        for(var item in cart){
+            if (cart[item] != 0){ // me added this, id the quantity for the product is 0, it will not create plus minus button
+            // Set a HTML for build plus minus button and value(product quantity)
+            document.getElementById("div"+item).innerHTML = "<button id='minus"+ item + "' class='btn btn-primary minus'>-</button> <span id='val" + item + "' '>" + cart[item] + "</span> <button id='plus"+ item + "' class ='btn btn-primary plus'>+</button>";
+            }   
+        }
         localStorage.setItem('cart', JSON.stringify(cart));
         //! Here 'cart' is navbar cart button ID, cart is variable we created in localStorage
         // It will show how many differnt product in the cart
         document.getElementById('cart').innerHTML = Object.keys(cart).length;
+        console.log(cart);
+
+    }
+
+    // If plus minus button cliked , change the cart as well as display value
+
+    // For Minus
+    $('.divpr').on('click', "button.minus",function(){
+        a = this.id.slice(7, ); // Slice the id only take the product ID
+        cart['pr'+ a] = cart['pr'+ a] - 1;
+        cart['pr'+ a] = Math.max(0, cart['pr'+ a]); // It will reduce (-) value
+        document.getElementById('valpr'+ a).innerHTML = cart['pr'+ a];
+        updatecart(cart);
     });
+    // For Plus
+        $('.divpr').on('click', "button.plus", function () {
+            a = this.id.slice(6, ); // Slice the id only take the product ID
+            cart['pr' + a] = cart['pr' + a] + 1;
+            document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
+            updatecart(cart);
+        });
 </script>
 
 
