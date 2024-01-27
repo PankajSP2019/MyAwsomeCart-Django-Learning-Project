@@ -66,7 +66,7 @@ padding-right: 0;
                         <div class="card align-items-center" style="width: 18rem;">
                             <img alt="..." class="card-img-top" src='/media/{{i.image}}'>
                             <div class="card-body">
-                                <h5 class="card-title">{{i.product_name}}</h5>
+                                <h5 id="namepr{{i.id}}" class="card-title">{{i.product_name}}</h5>
                                 <p class="card-text">{{i.desc|slice:"0:53"}}....</p>
                                 <!-- Changes here to add increment/decrement button -->
                                 <span id="divpr{{i.id}}" class="divpr">
@@ -101,71 +101,110 @@ padding-right: 0;
 <!--JS Block-->
 {% block js %}
 <script>
-    // Find out cart item form local Storage
+     // Find out cart item form local Storage
     // Create cart if not exist, if exists then fetch it
-    if(localStorage.getItem('cart') == null){
+    if (localStorage.getItem('cart') == null) {
         var cart = {};
-    }else{
+    } else {
         cart = JSON.parse(localStorage.getItem('cart'));
-        //! Here 'cart' is navbar cart button ID, cart is variable we created in localStorage
-        // It will show how many differnt product in the cart
-        document.getElementById('cart').innerHTML = Object.keys(cart).length;
+        updatecart(cart);
+    }
+    // If the add to cart button is clicked, add/increment the item
+    //$('.cart').click(function() {
+    $('.divpr').on('click', 'button.cart', function () {
+        var idstr = this.id.toString();
+        if (cart[idstr] != undefined) {
+            qty = cart[idstr][0] + 1;
+        } else {
+            qty = 1;
+            name = document.getElementById('name'+ idstr).innerHTML;
+            cart[idstr] = [qty, name];
+        }
+        updatecart(cart);
+    });
+
+    // For showing the popover-text in the cart button
+    $("#popcart").popover();
+    
+    updatepopover(cart); // Calling updatepopover function
+
+    // New Function For updating PopOver, Showing the products in Pop over
+    function updatepopover(cart) {
+        var popStr = "";
+        popStr = popStr + "<h5> Cart for your items in my shopping cart </h5><div class='mx-2 my-2'>";
+        var i = 1;
+
+        // Add Table for showing the  product
+        popStr = popStr + "<table class='table table-sm table-hover table-borderless'> <thead><tr><th scope='col'>#</th><th scope='col'>Product Name</th><th scope='col'>Qty</th></tr></thead><tbody>"
+
+        for (var item in cart) {
+            productName = document.getElementById('name' + item).innerHTML.slice(0, 19) // For short the product name
+            popStr = popStr + "<tr><th scope='row'>" + i + "</th><td>" + productName + "</td><td>" + cart[item][0] + "</td></tr>";
+            //popStr = popStr + "<b>" + i + "</b>. ";
+            //popStr = popStr + document.getElementById('name' + item).innerHTML.slice(0, 19) + "... Qty: " + cart[item] + '<br>';
+            i = i + 1;
+        }
+        popStr = popStr + "<tbody></table>"; //Table close
+        //ADD Checkout and clear cart button
+        popStr = popStr + "</div> <a href='/shop/checkout'><button class='btn btn-primary mx-2' id='checkout'>Check Out</button></a> <button class='btn btn-primary mx-2' onclick='clearcart()'>Clear Cart</button>";
+        document.getElementById('popcart').setAttribute('data-content', popStr);
+        $('#popcart').popover('show');
+    }
+
+    // New Function For clear the cart
+    function clearcart() {
+        cart = JSON.parse(localStorage.getItem('cart'));
+        for (var item in cart) {
+            document.getElementById('div' + item).innerHTML = '<button id="' + item + '" class="btn btn-primary cart">Add To Cart</button>'
+        }
+        localStorage.clear();
+        cart = {};
         updatecart(cart);
     }
 
-    //!JQuery
-    $('.cart').click(function(){
-        // After click this funtion will the increse the number of same product, if the product is exists in the cart
-        // simply in count the product quantity 
-        console.log('Clicked - Checked')
-        var idstr = this.id.toString();
-        if(cart[idstr] != undefined){
-            cart[idstr] = cart[idstr] + 1;
-        }else{
-            cart[idstr] = 1;
-        }
-
-        updatecart(cart);
-    });
-    // For showing the popover-text in the cart button
-    $("#popcart").popover();
-    document.getElementById("popcart").setAttribute('data-content', "<h6>This is your shopping Cart, Happy Shopping</h6>")
-
     // New function for updating the cart
-    function updatecart(cart){
-        for(var item in cart){
-            if (cart[item] != 0){ // me added this, id the quantity for the product is 0, it will not create plus minus button
-            // Set a HTML for build plus minus button and value(product quantity)
-            document.getElementById("div"+item).innerHTML = "<button id='minus"+ item + "' class='btn btn-primary minus'>-</button> <span id='val" + item + "' '>" + cart[item] + "</span> <button id='plus"+ item + "' class ='btn btn-primary plus'>+</button>";
-            }   
+    function updatecart(cart) {
+        var sum = 0;
+        for (var item in cart) {
+            sum = sum + cart[item][0];
+            if (cart[item][0] != 0) { // me added this, id the quantity for the product is 0, it will not create plus minus button
+                // Set a HTML for build plus minus button and value(product quantity)
+                document.getElementById("div" + item).innerHTML = "<button id='minus" + item + "' class='btn btn-primary minus'>-</button> <span id='val" + item + "' '>" + cart[item][0] + "</span> <button id='plus" + item + "' class ='btn btn-primary plus'>+</button>";
+            } else if (cart[item][0] == 0) {
+                // IF the quantity is 0, the plus minus button will remove and Add to cart button will appare
+                document.getElementById('div' + item).innerHTML = '<button id="' + item + '" class="btn btn-primary cart">Add To Cart</button>';
+                // If the item quantity id 0, the item will automatically remove from our cart object
+                delete cart[item];
+            }
         }
         localStorage.setItem('cart', JSON.stringify(cart));
         //! Here 'cart' is navbar cart button ID, cart is variable we created in localStorage
-        // It will show how many differnt product in the cart
-        document.getElementById('cart').innerHTML = Object.keys(cart).length;
+        // It will show total product qunatity in the cart
+        // document.getElementById('cart').innerHTML = Object.keys(cart).length; // show number of different
+        document.getElementById('cart').innerHTML = sum;
         console.log(cart);
+        updatepopover(cart);
 
     }
 
+    
     // If plus minus button cliked , change the cart as well as display value
-
     // For Minus
-    $('.divpr').on('click', "button.minus",function(){
-        a = this.id.slice(7, ); // Slice the id only take the product ID
-        cart['pr'+ a] = cart['pr'+ a] - 1;
-        cart['pr'+ a] = Math.max(0, cart['pr'+ a]); // It will reduce (-) value
-        document.getElementById('valpr'+ a).innerHTML = cart['pr'+ a];
+    $('.divpr').on('click', "button.minus", function () {
+        a = this.id.slice(7,); // Slice the id only take the product ID
+        cart['pr' + a][0] = cart['pr' + a][0] - 1;
+        cart['pr' + a][0] = Math.max(0, cart['pr' + a][0]); // It will reduce (-) value
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
         updatecart(cart);
     });
     // For Plus
-        $('.divpr').on('click', "button.plus", function () {
-            a = this.id.slice(6, ); // Slice the id only take the product ID
-            cart['pr' + a] = cart['pr' + a] + 1;
-            document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
-            updatecart(cart);
-        });
+    $('.divpr').on('click', "button.plus", function () {
+        a = this.id.slice(6,); // Slice the id only take the product ID
+        cart['pr' + a][0] = cart['pr' + a][0] + 1;
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a][0];
+        updatecart(cart);
+    });
 </script>
-
 
 {% endblock %}
 <!--JS Block END-->

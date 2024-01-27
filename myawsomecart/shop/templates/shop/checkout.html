@@ -3,5 +3,96 @@
 {% block title %} Chekcout {% endblock %}
 
 {% block body %}
-<h2>Hello, This is Chekcout Page , will develop later</h2>
-{% endblock %}
+<div class="container">
+    <div class="col my-4">
+        <h2>Step 1 - My Awesome Cart Express Checkout - Review Your Cart Items</h2>
+        <div class="my-4" >
+            <ul class="list-group" id="items">
+                
+            </ul>
+        </div>
+    </div>
+    <div class="col my-4">
+        <h2>Step 2 - Enter Address & Other Details</h2>
+        <form action="#">
+            <div class="form-group">
+                <label for="inputname"> Full Name</label>
+                <input type="name" class="form-control" id="inputname" placeholder="Name">
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputPhone">Phone Number</label>
+                    <input type="tel" class="form-control" id="inputPhone">
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="inputEmail4">Email</label>
+                    <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="inputAddress">Address</label>
+                <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+            </div>
+            <div class="form-group">
+                <label for="inputAddress2">Address line 2</label>
+                <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="inputCity">City</label>
+                    <input type="text" class="form-control" id="inputCity">
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="inputState">State</label>
+                    <input type="text" class="form-control" id="inputState" placeholder="Enter State">
+                </div>
+                <div class="form-group col-md-2">
+                    <label for="inputZip">Zip</label>
+                    <input type="text" class="form-control" id="inputZip">
+                </div>
+            </div>
+            <!-- Just checking -->
+            <span class="sub">
+                <button type="submit" onclick="myFunction()" class="btn btn-primary ">Place Order</button>
+            </span>
+            
+        </form>
+    </div>
+</div>
+{% endblock %} <!-- Body Block END -->
+
+{% block js %}
+<script>
+    if(localStorage.getItem('cart') == null){
+        var cart = {};
+    }else{
+        cart = JSON.parse(localStorage.getItem('cart'));
+    }
+    var sum = 0;
+    // Check the cart is empty or not, by using JQuery
+    if($.isEmptyObject(cart)){ 
+        // If the cart is empty show this message
+        myStr = `<p>Your Cart is Empty, Please add some items to your cart before checking out!</p>`;
+        $('#items').append(myStr); // Show the message In the <ul class="list-group" id="items"></ul>
+    }else{
+        // If the cart is not empty then, show the items in the checkout page
+        for(item in cart){
+            let name = cart[item][1];
+            let qty = cart[item][0];
+            sum = sum + qty;
+            myStr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+                    ${name}
+                    <span class="badge badge-primary badge-pill">${qty}</span>
+                    </li>`;
+            $('#items').append(myStr); // Show the message In the <ul class="list-group" id="items"></ul>
+        }
+    }
+
+    document.getElementById('cart') = sum; //Update the navbar's cart button's value
+
+    // Just checking the Alert on submit button
+    function myFunction() {
+            alert("Checking Alert Function.");
+        }
+</script>
+{% endblock %} <!-- JS Block END -->
