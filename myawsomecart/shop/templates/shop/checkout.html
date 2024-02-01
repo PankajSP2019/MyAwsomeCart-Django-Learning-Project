@@ -14,47 +14,48 @@
     </div>
     <div class="col my-4">
         <h2>Step 2 - Enter Address & Other Details</h2>
-        <form action="#">
+        <form action="/shop/checkout/" method="post"> {% csrf_token %}
+            <!-- This is the hidden input, where all the cart products will store as Json -->
+            <input type="hidden" name="itemsJson" id="itemsJson">
             <div class="form-group">
-                <label for="inputname"> Full Name</label>
-                <input type="name" class="form-control" id="inputname" placeholder="Name">
+                <label for="name"> Full Name</label>
+                <input type="name" class="form-control" name="name" id="name" placeholder="Enter Your Full Name" required>
             </div>
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="inputPhone">Phone Number</label>
-                    <input type="tel" class="form-control" id="inputPhone">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" class="form-control" name="phone" id="phone" required>
                 </div>
                 <div class="form-group col-md-6">
-                    <label for="inputEmail4">Email</label>
-                    <input type="email" class="form-control" id="inputEmail4" placeholder="Email">
+                    <label for="email">Email</label>
+                    <input type="email" class="form-control" name="email" id="email" placeholder="Enter Your Email" required>
                 </div>
             </div>
             <div class="form-group">
-                <label for="inputAddress">Address</label>
-                <input type="text" class="form-control" id="inputAddress" placeholder="1234 Main St">
+                <label for="address">Address</label>
+                <textarea class="form-control" id="address" name="address" rows="3" required=""></textarea>
             </div>
-            <div class="form-group">
-                <label for="inputAddress2">Address line 2</label>
-                <input type="text" class="form-control" id="inputAddress2" placeholder="Apartment, studio, or floor">
-            </div>
+        
             <div class="form-row">
                 <div class="form-group col-md-6">
-                    <label for="inputCity">City</label>
-                    <input type="text" class="form-control" id="inputCity">
+                    <label for="city">City</label>
+                    <input type="text" placeholder="Enter City" name="city" class="form-control" id="city" required>
                 </div>
                 <div class="form-group col-md-4">
-                    <label for="inputState">State</label>
-                    <input type="text" class="form-control" id="inputState" placeholder="Enter State">
+                    <label for="state">State</label>
+                    <input type="text" class="form-control" name="state" id="state" placeholder="Enter State" required>
                 </div>
                 <div class="form-group col-md-2">
-                    <label for="inputZip">Zip</label>
-                    <input type="text" class="form-control" id="inputZip">
+                    <label for="zip_code">Zip</label>
+                    <input type="text" class="form-control" name="zip_code" id="zip_code" required>
                 </div>
             </div>
+
+            <button type="submit"  class="btn btn-primary ">Place Order</button>
             <!-- Just checking -->
-            <span class="sub">
+            <!-- <span class="sub">
                 <button type="submit" onclick="myFunction()" class="btn btn-primary ">Place Order</button>
-            </span>
+            </span> -->
             
         </form>
     </div>
@@ -88,7 +89,25 @@
         }
     }
 
-    document.getElementById('cart') = sum; //Update the navbar's cart button's value
+    document.getElementById('cart').innerHTML = sum; //Update the navbar's cart button's value
+
+
+    // Pass all the ordered product details in the hidden input tag
+    $('#itemsJson').val(JSON.stringify(cart));
+
+    // Show message after succesfully place an order, and redirect the page location
+    /* {% if thank %}
+    alert("Your Order is succesfully Placed, Thanks for shopping from us. Your order ID is #{{id}}. Use this ID for track your order");
+    localStorage.clear();
+    document.location = '/shop';
+    {% endif %} */
+    
+    // We can use this Approach Also
+    if("{{thank}}" == "True"){
+        alert("Your Order is succesfully Placed, Thanks for shopping from us. Your order ID is #{{id}}. Use this ID for track your order");
+        localStorage.clear();
+        document.location = '/shop';
+    }
 
     // Just checking the Alert on submit button
     function myFunction() {

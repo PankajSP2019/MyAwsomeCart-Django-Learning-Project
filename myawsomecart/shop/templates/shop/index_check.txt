@@ -14,9 +14,8 @@ background-color: blue;
 }
 
 .col-md-3 img{
-
-max-width: 227px;
-height: 242px;
+width: 170px;
+height: 200px;
 }
 
 body .carousel-indicator li{
@@ -36,6 +35,7 @@ background-color: blue;
 .carousel-control-next{
 top: auto;
 bottom: auto;
+padding-top : 222px;
 }
 body .no-padding{
 padding-left: 0,
@@ -43,107 +43,167 @@ padding-right: 0;
 }
 {% endblock %}
 
-{% block body %}
-<!--Slide Show Start-->
-
-{% for product, range, nSlides in allProds %} <!--Parent For-->
-<!-- Newly Added -->
-<div class="row">
+{% block body %} <!--Body BlocK-->
+{% load static %}
 <div class="container">
-    <h5 class="my-5"> Flash On : Recommended Items - {{product.0.category}}</h5>
-    <div class="col carousel slide my-3" data-ride="carousel" id="demo{{forloop.counter}}">
-        <ul class="carousel-indicators">
-            <li class="active" data-slide-to="0" data-target="#demo{{forloop.counter}}"></li>
 
-            <!--Here range is pass form backend-->
-            {% for i in range %}
-            <li data-slide-to="{{i}}" data-target="#demo{{forloop.parentloop.counter}}"></li>
-            {% endfor %}
-        </ul>
+    <!--Slideshow starts here -->
+    {% for product, range, nSlides in allProds %}
+    <h5 class="my-4">Flash Sale On {{product.0.category}} - Recommended Items</h5>
+    <div class="row">
+        <div class="col carousel slide my-3" data-ride="carousel" id="demo{{forloop.counter}}">
+            <ul class="carousel-indicators">
+                <li class="active" data-slide-to="0" data-target="#demo{{forloop.counter}}"></li>
 
-        <!--Slideshow starts here -->
-        <div class="container carousel-inner no-padding">
-
-            <!-- Adding 0 number index product here manually, because it is active class-->
-            <div class="carousel-item active">
-
-                <!--Add Item from 1 number Index With using for loop, 0 number index product added manually to active class-->
-
-                {% for i in product %}
-                <div class="col-xs-3 col-sm-3 col-md-3">
-                    <div class="card" style="width: 18rem;">
-                        <img alt="..." class="card-img-top" src='/media/{{i.image}}'>
-                        <div class="card-body">
-                            <h5 class="card-title">{{i.product_name}}</h5>
-                            <p class="card-text">{{i.desc}}.</p>
-                            <button class="btn btn-primary cart" id="pr{{i.id}}">Add To Cart</button>
+                {% for i in range %}
+                <li data-slide-to="{{i}}" data-target="#demo{{forloop.parentloop.counter}}"></li>
+                {% endfor %}
+            </ul>
+            <div class="container carousel-inner no-padding">
+                <div class="carousel-item active">
+                    {% for i in product %}
+                    <div class="col-xs-3 col-sm-3 col-md-3">
+                        <div class="card align-items-center" style="width: 18rem;">
+                            <img alt="..." class="card-img-top" src='/media/{{i.image}}'>
+                            <div class="card-body">
+                                <h5 id="namepr{{i.id}}" class="card-title">{{i.product_name}}</h5>
+                                <p class="card-text">{{i.desc|slice:"0:53"}}....</p>
+                                <!-- Changes here to add increment/decrement button -->
+                                <span id="divpr{{i.id}}" class="divpr">
+                                <button class="btn btn-primary cart" id="pr{{i.id}}">Add To Cart</button>
+                                </span>
+                                <!-- Pass the ID to Link -->
+                                <a href="/shop/products/{{i.id}}"><button class="btn btn-primary cart" id="pv{{i.id}}">Quick View</button></a>
+                            </div>
                         </div>
                     </div>
+                    {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
                 </div>
+                <div class="carousel-item">
+                    {% endif %}
 
-                {% if forloop.counter|divisibleby:4 and forloop.counter > 0 and not forloop.last %}
-
-            </div>
-            <div class="carousel-item">
-                {% endif %}
-                {% endfor %}
+                    {% endfor %}
+                </div>
             </div>
         </div>
+        <!-- left and right controls for the slide -->
+        <a class="carousel-control-prev" data-slide="prev" href="#demo{{forloop.counter}}">
+            <span class="carousel-control-prev-icon"></span>
+        </a>
+        <a class="carousel-control-next" data-slide="next" href="#demo{{forloop.counter}}">
+            <span class="carousel-control-next-icon"></span>
+        </a>
     </div>
-
-    <!--Slide Show End-->
-
-    <!-- left and right controls for the slide -->
-    <a class="carousel-control-prev" data-slide="prev" href="#demo{{forloop.counter}}">
-        <span class="carousel-control-prev-icon"></span>
-    </a>
-    <a class="carousel-control-next" data-slide="next" href="#demo{{forloop.counter}}">
-        <span class="carousel-control-next-icon"></span>
-    </a>
-    <!-- END left and right controls for the slide -->
+    {% endfor %}
 </div>
-    {% endfor %} <!--Parent For-->
-
-    <br> <br><br>  <!--Just for extra space in the web page-->
-</div>
-{% endblock %}<!--Body BLock-->
+{% endblock %} <!--END Body BlocK-->
 
 <!--JS Block-->
 {% block js %}
 <script>
-    console.log("Working Check")
+     // Find out cart item form local Storage
     // Create cart if not exist, if exists then fetch it
-    if(localStorage.getItem('cart') == null){
+    if (localStorage.getItem('cart') == null) {
         var cart = {};
-    }else{
+    } else {
         cart = JSON.parse(localStorage.getItem('cart'));
         //! Here 'cart' is navbar cart button ID, cart is variable we created in localStorage
         // It will show how many differnt product in the cart
         document.getElementById('cart').innerHTML = Object.keys(cart).length;
+        updatecart(cart);
     }
-
-    //!JQuery
-    $('.cart').click(function(){
-        // After click this funtion will the increse the number of same product, if the product is exists in the cart
-        // simply in count the product quantity 
-        console.log('Clicked - Checked')
+    // If the add to cart button is clicked, add/increment the item
+    //$('.cart').click(function() {
+    $('.divpr').on('click', 'button.cart', function () {
         var idstr = this.id.toString();
-        if(cart[idstr] != undefined){
+        if (cart[idstr] != undefined) {
             cart[idstr] = cart[idstr] + 1;
-        }else{
+        } else {
             cart[idstr] = 1;
         }
-
-        // Update cart
-        console.log(cart);
-        localStorage.setItem('cart', JSON.stringify(cart));
-        //! Here 'cart' is navbar cart button ID, cart is variable we created in localStorage
-        // It will show how many differnt product in the cart
-        document.getElementById('cart').innerHTML = Object.keys(cart).length;
+        updatecart(cart);
     });
 
-</script>
+    // For showing the popover-text in the cart button
+    $("#popcart").popover();
+    
+    updatepopover(cart); // Calling updatepopover function
 
+    // New Function For updating PopOver, Showing the products in Pop over
+    function updatepopover(cart) {
+        var popStr = "";
+        popStr = popStr + "<h5> Cart for your items in my shopping cart </h5><div class='mx-2 my-2'>";
+        var i = 1;
+
+        // Add Table for showing the  product
+        popStr = popStr + "<table class='table table-sm table-hover table-borderless'> <thead><tr><th scope='col'>#</th><th scope='col'>Product Name</th><th scope='col'>Qty</th></tr></thead><tbody>"
+
+        for (var item in cart) {
+            productName = document.getElementById('name' + item).innerHTML.slice(0, 19) // For short the product name
+            popStr = popStr + "<tr><th scope='row'>" + i + "</th><td>" + productName + "</td><td>" + cart[item] + "</td></tr>";
+            //popStr = popStr + "<b>" + i + "</b>. ";
+            //popStr = popStr + document.getElementById('name' + item).innerHTML.slice(0, 19) + "... Qty: " + cart[item] + '<br>';
+            i = i + 1;
+        }
+        popStr = popStr + "<tbody></table>"; //Table close
+        //ADD Checkout and clear cart button
+        popStr = popStr + "</div> <a href='/shop/checkout'><button class='btn btn-primary mx-2' id='checkout'>Check Out</button></a> <button class='btn btn-primary mx-2' onclick='clearcart()'>Clear Cart</button>";
+        document.getElementById('popcart').setAttribute('data-content', popStr);
+        $('#popcart').popover('show');
+    }
+
+    // New Function For clear the cart
+    function clearcart() {
+        cart = JSON.parse(localStorage.getItem('cart'));
+        for (var item in cart) {
+            document.getElementById('div' + item).innerHTML = '<button id="' + item + '" class="btn btn-primary cart">Add To Cart</button>'
+        }
+        localStorage.clear();
+        cart = {};
+        updatecart(cart);
+    }
+
+    // New function for updating the cart
+    function updatecart(cart) {
+        var sum = 0;
+        for (var item in cart) {
+            sum = sum + cart[item];
+            if (cart[item] != 0) { // me added this, id the quantity for the product is 0, it will not create plus minus button
+                // Set a HTML for build plus minus button and value(product quantity)
+                document.getElementById("div" + item).innerHTML = "<button id='minus" + item + "' class='btn btn-primary minus'>-</button> <span id='val" + item + "' '>" + cart[item] + "</span> <button id='plus" + item + "' class ='btn btn-primary plus'>+</button>";
+            } else if (cart[item] == 0) {
+                // IF the quantity is 0, the plus minus button will remove and Add to cart button will appare
+                document.getElementById('div' + item).innerHTML = '<button id="' + item + '" class="btn btn-primary cart">Add To Cart</button>'
+            }
+        }
+        localStorage.setItem('cart', JSON.stringify(cart));
+        //! Here 'cart' is navbar cart button ID, cart is variable we created in localStorage
+        // It will show total product qunatity in the cart
+        // document.getElementById('cart').innerHTML = Object.keys(cart).length; // show number of different
+        document.getElementById('cart').innerHTML = sum;
+        console.log(cart);
+        updatepopover(cart);
+
+    }
+
+
+    // If plus minus button cliked , change the cart as well as display value
+    // For Minus
+    $('.divpr').on('click', "button.minus", function () {
+        a = this.id.slice(7,); // Slice the id only take the product ID
+        cart['pr' + a] = cart['pr' + a] - 1;
+        cart['pr' + a] = Math.max(0, cart['pr' + a]); // It will reduce (-) value
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
+        updatecart(cart);
+    });
+    // For Plus
+    $('.divpr').on('click', "button.plus", function () {
+        a = this.id.slice(6,); // Slice the id only take the product ID
+        cart['pr' + a] = cart['pr' + a] + 1;
+        document.getElementById('valpr' + a).innerHTML = cart['pr' + a];
+        updatecart(cart);
+    });
+</script>
 
 {% endblock %}
 <!--JS Block END-->

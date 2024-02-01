@@ -3,7 +3,7 @@ from django.db import models
 
 # Create your models here.
 
-
+# For Adding Product
 class Product(models.Model):
     product_id = models.AutoField
     product_name = models.CharField(max_length=50)
@@ -21,6 +21,7 @@ class Product(models.Model):
         # return self.product_name
 
 
+# For Query of customer/user
 class Contact(models.Model):
     msg_id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50)
@@ -30,3 +31,32 @@ class Contact(models.Model):
 
     def __str__(self):
         return self.name
+
+
+# For saving the orders
+class Order(models.Model):
+    order_id = models.AutoField(primary_key=True)
+    items_json = models.CharField(max_length=5000)
+    name = models.CharField(max_length=90)
+    phone = models.CharField(max_length=111)
+    email = models.CharField(max_length=111)
+    address = models.CharField(max_length=111)
+    city = models.CharField(max_length=111)
+    state = models.CharField(max_length=111)
+    zip_code = models.CharField(max_length=111, default="")
+
+    def __str__(self):
+        return str(self.order_id)
+
+
+class OrderUpdate(models.Model):
+    update_id = models.AutoField(primary_key=True)
+    order_id = models.IntegerField(default="")
+    update_desc = models.CharField(max_length=5000)
+    timestamp = models.DateField(auto_now_add=True)  # It will automatically save the current time
+
+    def __str__(self):
+        return f"uid: {self.update_id} - oid: {self.order_id} - ({self.timestamp})"
+
+
+

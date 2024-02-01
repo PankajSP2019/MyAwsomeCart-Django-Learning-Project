@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1, shrink-to-fit=no" name="viewport">
+
+    <!-- Bootstrap CSS -->
+    <link crossorigin="anonymous" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+          integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Montserrat:wght@400;700&family=Roboto:wght@400;700&family=Lato:wght@400;700&family=Pacifico&family=Poppins:wght@400;700&family=Raleway:wght@400;700&family=Cormorant+Garamond:wght@400;700&display=swap"
+          rel="stylesheet">
+
+
+    {% load static %}
+    <!-- Add an icon with the title. it will show along with the title in the browser's tab -->
+    <link href="/media/myawsomecart/images/bullseye-solid.svg?v=2" rel="icon" type="image/svg+xml">
+    <title>Welcome To My Awesome Cart</title>
+
+
+    <style>
+        /* Define a font family for the heading */
+        .grd {
+            font-family: 'Raleway', sans-serif;
+        }
+
+        .grd {
+            font-size: 3em; /* You can adjust the value as needed */
+        }
+    
+        /* Apply a gradient background to the heading with a glow effect */
+        .grd {
+            display: inline-block;
+            /* Ensure the gradient covers the text */
+            padding: 10px;
+            /* Add padding for better visibility of the gradient */
+            animation: glow 2s infinite alternate;
+            /* Continuous glow effect with alternate direction */
+        }
+    
+    
+        /* Add keyframes for the glow animation */
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 10px #feb47b;
+                /* Initial glow color and intensity */
+            }
+    
+            100% {
+                text-shadow: 0 0 20px #ff7e5f;
+                /* Final glow color and intensity */
+            }
+        }
+
+        .check {
+        position: relative;
+        font-size: 2rem;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        line-height: 80px;
+        cursor: pointer;
+    }
+    .text{
+        color: transparent;
+        -webkit-text-stroke: 1px rgba(255, 255, 255, 0.6);
+    }
+    .hover-text{
+        position: absolute;
+        inset: 0;
+        width: 0%;
+        color: var(--clr);
+        overflow: hidden;
+        border-right: 6px solid var(--clr);
+        transition: 0.5s ease-in-out;
+    }
+    .check:hover .hover-text{
+        width: 100%;
+        filter: drop-shadow(0 0 40px var(--clr));
+    }
+
+    </style>
+
+
+</head>
+<body>
+
+
+
+<div class="container my-4">
+    <center>
+        <h1 class="grd my-4" id="animatedHeading">My Awesome Cart</h1>
+        <div class="check">
+            <span class="text">&nbsp;Your Trust, Our Pride&nbsp;</span>
+            <span class="hover-text">&nbsp;Your Trust, Our Pride&nbsp;</span>
+        </div>
+    </center>
+
+
+    <div class="jumbotron">
+        <h1 class="display-4">Welcome To My Awesome Cart</h1>
+        <p class="lead">This is a fresh website, where you can write blogs to express your thoughts and also there are
+            large
+            number of product available in thr shop section from where you can by your desire goods at good price.</p>
+        <hr class="my-4">
+        <a class="btn btn-primary btn-lg" href="/shop" role="button">Go To Shop</a>
+        <a class="btn btn-primary btn-lg" href="/blog" role="button">Go To Blog</a>
+    </div>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script crossorigin="anonymous"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+        src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+<script crossorigin="anonymous"
+        integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+        src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+<script>
+    // JavaScript to continuously change the text color
+    function changeColor() {
+        const heading = document.getElementById('animatedHeading');
+        heading.style.color = getRandomColor();
+    }
+
+    // Function to generate a random color
+    function getRandomColor() {
+        const letters = '0123456789ABCDEF';
+        let color = '#';
+        for (let i = 0; i < 6; i++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+
+    // Call the changeColor function every second
+    setInterval(changeColor, 1000);
+
+</script>
+
+</body>
+</html>
