@@ -41,6 +41,8 @@ body .no-padding{
 padding-left: 0,
 padding-right: 0;
 }
+
+
 {% endblock %}
 
 {% block body %} <!--Body BlocK-->
@@ -68,6 +70,10 @@ padding-right: 0;
                             <div class="card-body">
                                 <h5 id="namepr{{i.id}}" class="card-title">{{i.product_name}}</h5>
                                 <p class="card-text">{{i.desc|slice:"0:53"}}....</p>
+                                <!-- For display and tore the price in localStorage -->
+                                <div class="p-item-price my-2" >
+                                    <b>BDT. <span id="pricepr{{i.id}}">{{i.price}}</span> ৳</b>
+                                </div>
                                 <!-- Changes here to add increment/decrement button -->
                                 <span id="divpr{{i.id}}" class="divpr">
                                 <button class="btn btn-primary cart" id="pr{{i.id}}">Add To Cart</button>
@@ -118,7 +124,9 @@ padding-right: 0;
         } else {
             qty = 1;
             name = document.getElementById('name'+ idstr).innerHTML;
-            cart[idstr] = [qty, name];
+            //changes here
+            price = parseInt(document.getElementById('price'+ idstr).innerHTML); // Get the Price
+            cart[idstr] = [qty, name, price];
         }
         updatecart(cart);
     });
@@ -146,6 +154,7 @@ padding-right: 0;
         }
         popStr = popStr + "<tbody></table>"; //Table close
         //ADD Checkout and clear cart button
+        // Will add a condition here, that if the cart is empty, the checkout button will not shown
         popStr = popStr + "</div> <a href='/shop/checkout'><button class='btn btn-primary mx-2' id='checkout'>Check Out</button></a> <button class='btn btn-primary mx-2' onclick='clearcart()'>Clear Cart</button>";
         document.getElementById('popcart').setAttribute('data-content', popStr);
         $('#popcart').popover('show');
