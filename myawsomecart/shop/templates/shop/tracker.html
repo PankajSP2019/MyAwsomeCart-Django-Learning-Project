@@ -11,11 +11,11 @@
             <div class="form-row">
                 <div class="form-group col-md-6">
                     <label for="orderId">Order Id</label>
-                    <input type="text" class="form-control" id="orderId" name="orderId" placeholder="Orer Id">
+                    <input type="text" class="form-control" id="orderId" name="orderId" placeholder="Orer Id" required>
                 </div>
                 <div class="form-group col-md-6">
                     <label for="email">Email</label>
-                    <input type="email" class="form-control" id="email" name="email" placeholder="Email">
+                    <input type="email" class="form-control" id="email" name="email" placeholder="Email" required>
                 </div>
                 <button type="submit" class="btn btn-primary">Track Order</button>
             </div>
@@ -27,7 +27,11 @@
             <ul class="list-group" id="items">
             </ul>
         </div>
-
+    </div>
+    <!-- Show The order Details in the table formal -->
+    
+    <div class="col my-4" id="div_items">
+        <!-- <h2>Your Order Details:</h2>  -->
     </div>
 </div>
 {% endblock %} <!-- Body Block END -->
@@ -47,10 +51,13 @@
             data: formData,
             encode: true
         })
-        .done(function (data) {
-            console.log(data)
-            updates = JSON.parse(data);
-            if (updates.length > 0 & updates != {}) {
+        .done(function (data) { // Return For views.py --> tracker()
+            console.log(data);
+            data = JSON.parse(data);
+            updates = data[0];
+            //updates = JSON.parse(data);
+            // if (updates.length > 0 & updates != {}) { // It occure error
+            if (updates && Array.isArray(updates) && updates.length > 0) { // New Added
                 for (i = 0; i < updates.length; i++) {
                     let text = updates[i]['text'];
                     let time = updates[i]['time'];
@@ -60,11 +67,77 @@
                             </li>`
                     $('#items').append(mystr);
                 }
+                //For Order details
+                oder_details = `<h2>Your Order Details:</h2> `
+                $('#div_items').append(oder_details);
+                
             } else {
                 mystr = `<li class="list-group-item d-flex justify-content-between align-items-center">
                 Sorry, We are not able to fetch this order id and email. Make sure to type correct order Id and email</li>`
                 $('#items').append(mystr);
             }
+
+            // Showing Order Details
+            if (updates && Array.isArray(updates) && updates.length > 0) {
+            cart = JSON.parse(data[1]);
+            console.log(cart);
+            // For showing the details in a table format, as like checkout page
+            table_content = `<table class="table table-sm table-hover table-striped table-borderless my-4">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">QTY</th>
+                        <th scope="col">Total Price</th>
+                    </tr>
+                </thead>
+                <tbody id="citems">
+                    <!-- Items Will Appare Here -->
+                </tbody>
+            </table>`;
+            $('#div_items').append(table_content); 
+
+            total_order_price = 0;
+            var i = 1;
+            for (item in cart) {
+                let name = cart[item][1];
+                let qty = cart[item][0];
+                //Changes here for showing the price
+                let price = cart[item][2];
+                let total_price = price * qty;
+                total_order_price = total_order_price + total_price;
+
+                // For table
+                myStr = `<tr>
+                        <td>${i}</td>
+                        <td>${name}</td>
+                        <td>${price}</td>
+                        <td>${qty}</td>
+                        <td>${total_price}</td>
+                    </tr>`
+
+                $('#citems').append(myStr); // Show the message In the <ul class="list-group" id="items"></ul>
+                i = i + 1;
+            }
+            // Add total bill
+            text = `<tr class="table-success">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><b>Total Price:</b></td>
+                    <td><b>${total_order_price}</b></td>
+                </tr>`;
+            $('#citems').append(text);
+
+            }/* else{
+                empty_text = `<ul class="list-group" id="items">
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        No Order Details Found </li></ul>`; 
+                $('#div_items').append(empty_text);
+ 
+            } */// Showing Order details
+        
         });
         event.preventDefault();
     });

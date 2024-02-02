@@ -71,8 +71,8 @@ padding-right: 0;
                                 <h5 id="namepr{{i.id}}" class="card-title">{{i.product_name}}</h5>
                                 <p class="card-text">{{i.desc|slice:"0:53"}}....</p>
                                 <!-- For display and tore the price in localStorage -->
-                                <div class="p-item-price my-2" >
-                                    <b>BDT. <span id="pricepr{{i.id}}">{{i.price}}</span> ৳</b>
+                                <div class="item-price my-2" >
+                                    <b style="color: green;">BDT. <span id="pricepr{{i.id}}">{{i.price}}</span> ৳</b>
                                 </div>
                                 <!-- Changes here to add increment/decrement button -->
                                 <span id="divpr{{i.id}}" class="divpr">

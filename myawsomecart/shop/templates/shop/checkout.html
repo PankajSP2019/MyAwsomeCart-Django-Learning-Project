@@ -6,11 +6,23 @@
 <div class="container">
     <div class="col my-4">
         <h2>Step 1 - My Awesome Cart Express Checkout - Review Your Cart Items</h2>
-        <div class="my-4" >
+        <div class="my-4" id="div_items" >
             <!-- Will be change here, add table -->
-            <ul class="list-group" id="items">
-                
-            </ul>
+            <!-- <ul class="list-group" id="items">   
+            </ul> -->
+            <!-- <table class="table table-hover table-striped table-borderless my-4">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">QTY</th>
+                        <th scope="col">Total Price</th>
+                    </tr>
+                </thead>
+                <tbody id="items">
+                     Items Will Appare Here 
+                </tbody>
+            </table> -->
         </div>
     </div>
     <div class="col my-4">
@@ -71,15 +83,32 @@
         cart = JSON.parse(localStorage.getItem('cart'));
     }
     var sum = 0;
-    total_order_price = 0; // for track the total order price.
     // Check the cart is empty or not, by using JQuery
     if($.isEmptyObject(cart)){ 
         // If the cart is empty show this message
         myStr = `<p>Your Cart is Empty, Please add some items to your cart before checking out!</p>`;
-        $('#items').append(myStr); // Show the message In the <ul class="list-group" id="items"></ul>
+        $('#div_items').append(myStr); // Show the message In the <ul class="list-group" id="items"></ul>
     }else{
         // If the cart is not empty then, show the items in the checkout page
+
+        table_content = `<table class="table table-hover table-striped table-borderless my-4">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">Product Name</th>
+                        <th scope="col">Price</th>
+                        <th scope="col">QTY</th>
+                        <th scope="col">Total Price</th>
+                    </tr>
+                </thead>
+                <tbody id="items">
+                    <!-- Items Will Appare Here -->
+                </tbody>
+            </table>`;
+            $('#div_items').append(table_content); 
+
         total_order_price = 0;
+        var i = 1;
         for(item in cart){
             let name = cart[item][1];
             let qty = cart[item][0];
@@ -88,19 +117,35 @@
             let total_price = price * qty;
             total_order_price = total_order_price + total_price;
             sum = sum + qty;
-            myStr = `<li class="list-group-item d-flex justify-content-between align-items-center">
+
+            // For ul tag
+            /* myStr = `<li class="list-group-item d-flex justify-content-between align-items-center">
                     ${name}
                     <span class="badge badge-primary badge-pill">${qty}</span>
                     <span class="badge badge-primary badge-pill">${price}৳</span>
                     <span class="badge badge-primary badge-pill">${total_price}৳</span>
-                    </li>`;
+                    </li>`; */
+
+            // For table
+            myStr = `<tr>
+                        <td>${i}</td>
+                        <td>${name}</td>
+                        <td>${price}</td>
+                        <td>${qty}</td>
+                        <td>${total_price}</td>
+                    </tr>`
+                    
             $('#items').append(myStr); // Show the message In the <ul class="list-group" id="items"></ul>
+            i = i + 1;
         }
         // Add total bill
-        text = `<li class="list-group-item d-flex justify-content-between align-items-center">
-                    Total Price
-                    <span class="badge badge-primary badge-pill">${total_order_price}৳</span>
-                    </li>`;
+        text = `<tr class="table-success">
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td><b>Total Price:</b></td>
+                    <td><b>${total_order_price}</b></td>
+                </tr>`;
         $('#items').append(text);
     }
 
