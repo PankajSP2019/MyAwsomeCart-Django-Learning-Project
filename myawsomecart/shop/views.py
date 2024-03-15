@@ -76,9 +76,37 @@ def tracker(request):
     return render(request, 'shop/tracker.html')
 
 
+# For Search Item
+def searchMatch(query, item):
+    """
+    :param query:
+    :param item:
+    :return: True only if query matches the item
+    """
+    if query.lower() in item.desc.lower() or query.lower() in item.product_name.lower() or query.lower() in item.category.lower():
+        return True
+    else:
+        return False
+
+
 def search(request):
-    # return HttpResponse("hello From Blog-Index")
-    return render(request, 'shop/search.html')
+    query = request.GET.get('search')
+    allProds = []
+    category_and_id = Product.objects.values('category', 'id')  # It will fetch all the category and id column's data
+    all_category = {item['category'] for item in
+                    category_and_id}  # Set comprehensions for store the unique category name
+    for category in all_category:
+        prodtemp = Product.objects.filter(category=category)  # Fetch item details based on category
+        prod = [item for item in prodtemp if searchMatch(query, item)]
+        n = len(prod)
+        nSlides = n // 4 + ceil((n / 4) - (n // 4))
+        if len(prod) != 0:
+            # Store the data based on category in the main list
+            allProds.append([prod, range(1, nSlides), nSlides])
+    params = {'allProds': allProds, 'msg': ""}
+    if len(allProds) == 0 or len(query) < 3:
+        params = {'msg': "Please Enter Relevant Item name, Category name as Query. Thank You.. "}
+    return render(request, 'shop/search.html', params)
 
 
 def productview(request, myid):

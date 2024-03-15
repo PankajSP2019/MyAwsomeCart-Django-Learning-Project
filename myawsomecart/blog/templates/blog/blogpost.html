@@ -3,32 +3,42 @@
 <div class="container">
     <div class="row mt-4">
         <div class="col-md-8 blog-main">
-            <h3 class="pb-4 mb-4 font-italic border-bottom">
-                Title
-            </h3>
+            <div class="pb-4 mb-4 border-bottom">
+                <h3 class="font-italic">{{post.title}}</h3>
+                <p class="blog-post-meta">{{post.pub_date}} by <a href="#">My Awesome Cart</a></p>
+                <!-- Facebook Share button Plugin -->
+                <!-- <div class="my-3 fb-share-button" data-href="http://127.0.0.1:8000/blog/blogpost/{{post.post_id}}"
+                    data-layout="button_count" data-size="large"><a target="_blank"
+                        href="https://www.facebook.com/sharer/sharer.php?u=http%3A%2F%2F127.0.0.1%3A8000%2Fblog%2Fblogpost%2F4&src=sdkpreparse"
+                        class="fb-xfbml-parse-ignore">Share</a></div> -->
+            </div>
             <div class="blog-post">
-                <h2 class="blog-post-title">Heading 0</h2>
-                <p class="blog-post-meta">January 1, 2014 by <a href="#">CodeWithHarry</a></p>
-                <p>Heading 0 content</p>
-                <h2>Heading1</h2>
-                <p> Heading 1 content</p>
-                <h2>Heading2</h2>
-                <p>Heading 2 content</p>
+                <h2 class="blog-post-title">{{post.head0}}</h2>
+                <p>{{post.chead0}}</p>
+                <h2>{{post.head1}}</h2>
+                <p> {{post.chead1}}</p>
+                <h2>{{post.head2}}</h2>
+                <p>{{post.chead2}}</p>
             </div><!-- /.blog-post -->
+            <!-- Facebook Comment  Plugin -->
+            <!-- <div class="fb-comments" data-href="http://127.0.0.1:8000/blog/blogpost/{{post.post_id}}" data-numposts="5"></div> -->
         </div><!-- /.blog-main -->
+        
         <aside class="col-md-4 blog-sidebar">
             <div class="p-4 mb-3 bg-light rounded">
                 <h4 class="font-italic">About</h4>
                 <p class="mb-0">My Awesome Cart is an <em>ecommerce website</em>. You can use it for buying and searching items online. </p>
             </div>
             <div class="p-4">
-                <h4 class="font-italic">Contact Us On: </h4>
+                <img src="/media/{{ post.thumbnail }}" class="bd-placeholder-img" width="250" height="300" alt="Thumbnail">
+                <h4 class="font-italic my-2">Contact Us On: </h4>
                 <ol class="list-unstyled">
                     <li><a href="#">GitHub</a></li>
                     <li><a href="#">Twitter</a></li>
                     <li><a href="#">Facebook</a></li>
                 </ol>
             </div>
+            
         </aside><!-- /.blog-sidebar -->
     </div>
 </div>

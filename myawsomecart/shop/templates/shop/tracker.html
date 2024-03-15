@@ -52,6 +52,8 @@
             encode: true
         })
         .done(function (data) { // Return For views.py --> tracker()
+            // First will empty the Order details div, otherwise duplicate details will shown
+            $('#div_items').empty();
             console.log(data);
             data = JSON.parse(data);
             updates = data[0];
